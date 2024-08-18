@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Countdown Timer</title>
+    <script>
+        let countdownInterval;
+
+        function updateCountdown() {
+            fetch('/time')
+                .then(response => response.text())
+                .then(data => {
+                    const remainingTime = parseInt(data, 10);
+                    document.getElementById('countdown').textContent = remainingTime;
+
+                    if (remainingTime <= 0) {
+                        clearInterval(countdownInterval);
+                    }
+                });
+        }
+
+        function startDeletion() {
+            fetch('/delCode', {
+                method: 'POST'
+            })
+                .then(response => response.text())
+                .then(data => {
+                    alert(data);
+                    countdownInterval = setInterval(updateCountdown, 1000); // 每秒更新一次倒计时
+                });
+        }
+    </script>
+</head>
+<body>
+<h1>Countdown Timer</h1>
+<p>Time remaining: <span id="countdown">Not started</span> seconds</p>
+<button onclick="startDeletion()">Start Countdown and Delete Code</button>
+</body>
+</html>
